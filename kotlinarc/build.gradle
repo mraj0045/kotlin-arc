@@ -1,6 +1,32 @@
+buildscript {
+    ext.kotlin_version = '1.3.21'
+    repositories {
+        google()
+        jcenter()
+
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.3.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.novoda:bintray-release:0.9'
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+
+publish {
+    userOrg = 'mraj0045' //bintray username
+    groupId = 'com.arc.kotlin'
+    artifactId = 'arc-kotlin'
+    publishVersion = '0.0.1'
+    desc = 'Base Architecture and Utility files to be used in the projects.'
+    website = 'https://github.com/mraj0045/kotlin-arc'
+}
 
 android {
     compileSdkVersion 28
@@ -53,3 +79,7 @@ dependencies {
     api "com.squareup.okhttp3:logging-interceptor:$rootProject.ext.okHttpVersion"
     api "com.squareup.okhttp3:okhttp-urlconnection:$rootProject.ext.okHttpVersion"
 }
+
+
+// Run the command in terminal to upload the project to the Bintray account
+// ./gradlew clean build bintrayUpload -PbintrayUser=mraj0045 -PbintrayKey=0aa848c6e3b6e2b0fd0001293560556e149d2d8c -PdryRun=false

@@ -1,6 +1,8 @@
 package com.arc.kotlin.util;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.util.Base64;
 
 import javax.crypto.Cipher;
@@ -50,6 +52,7 @@ final class Security {
         return data.replace("-", "+").replace("_", "/").replace(",", "=");
     }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     public static String SHA1(String text) {
         MessageDigest md = null;
         try {
