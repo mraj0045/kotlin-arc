@@ -1,42 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#191919"
-    android:paddingBottom="10dp"
+    android:orientation="vertical"
     android:paddingLeft="20dp"
+    android:paddingTop="10dp"
     android:paddingRight="20dp"
-    android:paddingTop="10dp">
+    android:paddingBottom="10dp">
 
     <TextView
         android:id="@+id/txtTitle"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title.Inverse"
-        app:layout_constraintEnd_toStartOf="@+id/btnDelete"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
         tools:text="@string/title" />
 
     <TextView
         android:id="@+id/txtBody"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
-        app:layout_constraintEnd_toEndOf="@+id/txtTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTitle"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
         tools:text="@string/description" />
 
-    <ImageButton
-        android:id="@+id/btnDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="?selectableItemBackground"
-        android:contentDescription="@string/app_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_delete" />
 
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

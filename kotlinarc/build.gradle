@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 28
@@ -8,7 +9,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -20,9 +21,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
     }
     // For Kotlin Compilers:
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
-    }
+//    kotlinOptions {
+//        jvmTarget = JavaVersion.VERSION_1_8
+//    }
 
     buildTypes {
         release {
@@ -33,7 +34,22 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "androidx.appcompat:appcompat:$rootProject.ext.appCompatVersion"
+    //Android support libraries
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    api "androidx.appcompat:appcompat:$rootProject.ext.appCompatVersion"
+    api "androidx.recyclerview:recyclerview:$rootProject.ext.recyclerViewVersion"
+    api 'androidx.core:core-ktx:1.1.0-alpha04'
+    api 'androidx.fragment:fragment-ktx:1.0.0'
+
+    //Dagger 2
+    api "com.google.dagger:dagger:$rootProject.ext.daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$rootProject.ext.daggerVersion"
+
+    //Retrofit
+    api "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofitVersion"
+    api "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofitVersion"
+
+    //OkHttp client
+    api "com.squareup.okhttp3:logging-interceptor:$rootProject.ext.okHttpVersion"
+    api "com.squareup.okhttp3:okhttp-urlconnection:$rootProject.ext.okHttpVersion"
 }

@@ -19,12 +19,15 @@ allprojects {
     repositories {
         google()
         jcenter()
-
     }
 }
 
 ext {
     appCompatVersion = '1.1.0-alpha02'
+    daggerVersion = '2.21'
+    recyclerViewVersion = '1.0.0'
+    retrofitVersion = '2.5.0'
+    okHttpVersion = '3.13.1'
 }
 
 task clean(type: Delete) {
