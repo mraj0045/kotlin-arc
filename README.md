@@ -48,7 +48,7 @@ dependencies {
 }
 ```
 
-### Step 2 - Creating Required files
+### Step 2 - Create Mandatory files
 Follow the steps to add the following files to the project. All the files are should be added under the project package.
 
 #### REST API 
