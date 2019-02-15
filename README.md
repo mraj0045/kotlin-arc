@@ -27,7 +27,7 @@ buildscript {
         }
     }
 }
-
+// Change version no below to use the latest version
 ext {
     appCompatVersion = '1.1.0-alpha02'
     daggerVersion = '2.21'
@@ -43,6 +43,7 @@ apply plugin: 'kotlin-kapt'
 
 dependencies {
     implementation 'com.arc.kotlin:arc-kotlin:0.0.1'
+    //Include Dagger compiler for annotation processing
     kapt "com.google.dagger:dagger-compiler:$rootProject.ext.daggerVersion"
 }
 ```
@@ -55,8 +56,9 @@ Create package **api.request** and create files as below.
 **Api.kt**
 ```kotlin
 interface Api {
-    //@GET("/posts")
-    //fun getPosts(): Call<ApiResponse<Post>>
+    //Sample usage
+    @GET("/posts")
+    fun getPosts(): Call<ApiResponse<Post>>
 }
 ```
 **ApiHandler.kt**
@@ -182,7 +184,7 @@ class ApiModule {
     @Provides
     fun providesRetrofit(httpClient: OkHttpClient, factory: Converter.Factory): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://jsonplaceholder.typicode.com")
+            .baseUrl("<BASE_URL>")
             .client(httpClient)
             .addConverterFactory(factory)
             .build()
@@ -209,6 +211,7 @@ class ApiModule {
     fun providesGson(): Gson {
         return GsonBuilder()
             .registerTypeAdapter(Date::class.java, DateDeserializer())
+            //For all the classes used for the response, register type adapter to make parsing works properly. Otherwise it will always goes to failure() method.
             .registerTypeAdapter(postType, CustomJsonDeserializer<Post>())
             .create()
     }
