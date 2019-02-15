@@ -48,7 +48,7 @@ dependencies {
 }
 ```
 
-### Step 2 - Create Mandatory files
+### Step 2 - Creating Required files
 Follow the steps to add the following files to the project. All the files are should be added under the project package.
 
 #### REST API 
@@ -191,16 +191,45 @@ class ApiModule {
     }
 
     @Provides
-    fun providesOkHttpClient(cookieGenerator: CookieGenerator): OkHttpClient {
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.level = HttpLoggingInterceptor.Level.BODY
+    fun providesOkHttpClient(loggingInterceptor: HttpLoggingInterceptor, cookieGenerator: CookieGenerator,trustManager: X509TrustManager?): OkHttpClient {
         return OkHttpClient.Builder()
             .readTimeout(30, TimeUnit.SECONDS)
             .connectTimeout(30, TimeUnit.SECONDS)
             .cookieJar(JavaNetCookieJar(cookieGenerator.cookieHandler))
-            .addInterceptor(interceptor)
+            .addInterceptor(loggingInterceptor)
+            .sslSocketFactory(CustomSSLSocketFactory(), trustManager)
             .build()
     }
+    
+    @Singleton
+    @Provides
+    fun providesLoggingInterceptor(): HttpLoggingInterceptor {
+        return HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+    }
+    
+    @Provides
+  internal fun providesTrustManager(): X509TrustManager? {
+    var trustManagerFactory: TrustManagerFactory? = null
+    try {
+      trustManagerFactory =
+        TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
+      trustManagerFactory!!.init(null as KeyStore?)
+      val trustManagers = trustManagerFactory.trustManagers
+      return if (trustManagers.size != 1 || trustManagers[0] !is X509TrustManager) {
+        // throw new IllegalStateException(
+        // &quot;Unexpected default trust managers:&quot; + Arrays.toString(trustManagers));
+        null
+      } else trustManagers[0] as X509TrustManager
+    } catch (e: NoSuchAlgorithmException) {
+      e.printStackTrace()
+      return null
+    } catch (e: KeyStoreException) {
+      e.printStackTrace()
+      return null
+    }
+  }
 
     @Provides
     fun providesGsonFactory(gson: Gson): Converter.Factory {
