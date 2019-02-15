@@ -384,4 +384,5 @@ Finally add the **App.kt** to the manifest file
 ```
 
 ## Latest version
-* 0.0.1
+* 0.0.2
+* 0.0.1 - base version
