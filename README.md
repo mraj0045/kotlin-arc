@@ -42,7 +42,7 @@ Add the following code in the app level gradle file (app/build.gragle)
 apply plugin: 'kotlin-kapt'
 
 dependencies {
-    implementation 'com.arc.kotlin:arc-kotlin:0.0.1'
+    implementation 'com.arc.kotlin:arc-kotlin:x.x.x'
     //Include Dagger compiler for annotation processing
     kapt "com.google.dagger:dagger-compiler:$rootProject.ext.daggerVersion"
 }
@@ -382,3 +382,6 @@ Finally add the **App.kt** to the manifest file
         android:supportsRtl="true"
         android:theme="@style/AppTheme"/>
 ```
+
+## Latest version
+* 0.0.1
