@@ -126,6 +126,7 @@ class ApiHandler(private val context: Context, private val mApi: Api, private va
 ```
 #### Dagger 2(Dependency injection)  
 Create package **injection.component** and create files as below.
+
 **AppComponent.kt**
 ```kotlin
 @Singleton
@@ -167,6 +168,7 @@ interface FragmentComponent{
 }
 ```
 Create package **injection.module** and create files as below.
+
 **ApiModule.kt**
 ```kotlin
 @Module
@@ -354,10 +356,11 @@ class PostActivity : BaseActivity<PostContract.Presenter>(), PostContract.View {
     }
 }
 ```
-Note: For Fragment and DialogFragment, extend the class with **BaseFragment.kt**
+Note: For Fragment and DialogFragment, extend the class with **BaseFragment.kt**. Also, use fragmentComponent() instead of activity component.
 
 ### Step 4 - Implement Application class
 In the root package, create application class by extending **ArcApplication.kt**
+
 **App.kt**
 ```kotlin
 class App : ArcApplication<AppComponent>() {
