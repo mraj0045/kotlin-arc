@@ -22,7 +22,7 @@ publish {
     userOrg = 'mraj0045' //bintray username
     groupId = 'com.arc.kotlin'
     artifactId = 'arc-kotlin'
-    publishVersion = '0.0.2'
+    publishVersion = '0.0.3'
     desc = 'Base Architecture and Utility files to be used in the projects.'
     website = 'https://github.com/mraj0045/kotlin-arc'
 }
@@ -33,8 +33,8 @@ android {
     defaultConfig {
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode 2
-        versionName "1.0.1"
+        versionCode 3
+        versionName "1.0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
