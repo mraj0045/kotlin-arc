@@ -390,7 +390,10 @@ Finally add the **App.kt** to the manifest file
 ```
 
 ## Latest version
-* **0.0.3**
+* **0.0.4**
+    * Added constraint layout library
+    
+* 0.0.3
     * Added option to change the version no of Kotlin core-ktx and Fragment-ktx
 * 0.0.2
 * 0.0.1 - base version
