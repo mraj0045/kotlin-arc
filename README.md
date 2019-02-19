@@ -34,11 +34,13 @@ ext {
     recyclerViewVersion = '1.0.0'
     retrofitVersion = '2.5.0'
     okHttpVersion = '3.13.1'
+    coreKtxVersion = '1.1.0-alpha04'
+    fragmentKtxVerion = '1.0.0'
 }
 ```
 
 Add the following code in the app level gradle file (app/build.gragle)
-```groovy
+```g roovy
 apply plugin: 'kotlin-kapt'
 
 dependencies {
@@ -384,5 +386,7 @@ Finally add the **App.kt** to the manifest file
 ```
 
 ## Latest version
+* **0.0.3**
+    * Added option to change the version no of Kotlin core-ktx and Fragment-ktx
 * 0.0.2
 * 0.0.1 - base version
