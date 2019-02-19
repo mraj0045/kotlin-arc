@@ -63,8 +63,8 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api "androidx.appcompat:appcompat:$rootProject.ext.appCompatVersion"
     api "androidx.recyclerview:recyclerview:$rootProject.ext.recyclerViewVersion"
-    api 'androidx.core:core-ktx:1.1.0-alpha04'
-    api 'androidx.fragment:fragment-ktx:1.0.0'
+    api "androidx.core:core-ktx:$rootProject.ext.coreKtxVersion"
+    api "androidx.fragment:fragment-ktx:$rootProject.ext.fragmentKtxVerion"
 
     //Dagger 2
     api "com.google.dagger:dagger:$rootProject.ext.daggerVersion"
@@ -80,5 +80,5 @@ dependencies {
 }
 
 
-// Run the command in terminal to upload the project to the Bintray account
-// ./gradlew clean build bintrayUpload -PbintrayUser=mraj0045 -PbintrayKey=0aa848c6e3b6e2b0fd0001293560556e149d2d8c -PdryRun=false
+// Reference blog for uploading library to jcenter bintray
+// https://medium.com/@anitaa_1990/6-easy-steps-to-upload-your-android-library-to-bintray-jcenter-59e6030c8890
