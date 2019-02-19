@@ -1,6 +1,6 @@
 # Kotlin-Arc
 
-Base architecture and utility files to be used in the projects.
+Base architecture and utility files to be used in the projects. Created based on the new AndroidX framework.
 
 ### Third-Party Library
 The libraries used in this project are listed below.
