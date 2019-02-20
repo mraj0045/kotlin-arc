@@ -133,15 +133,9 @@ Create package **injection.component** and create files as below.
 @Component(modules = [AppModule::class, ApiModule::class]) //Can add more modules based on the requirement
 interface AppComponent {
 
-    fun activityComponent(
-        activityModule: ActivityModule,
-        activityPresenterModule: ActivityPresenterModule
-    ): ActivityComponent
+    fun activityComponent(activityModule: ActivityModule): ActivityComponent
 
-    fun fragmentComponent(
-        fragmentModule: FragmentModule,
-        fragmentPresenterModule: FragmentPresenterModule
-    ): FragmentComponent
+    fun fragmentComponent(fragmentModule: FragmentModule): FragmentComponent
 
     fun inject(application: Application)
 }
@@ -149,7 +143,7 @@ interface AppComponent {
 **ActivityComponent.kt**
 ```kotlin
 @ActivityScope
-@Subcomponent(modules = [ActivityModule::class, ActivityPresenterModule::class])
+@Subcomponent(modules = [ActivityModule::class, ActivityMvpModule::class])
 interface ActivityComponent {
     // Sample usage
     fun inject(postActivity: PostActivity) 
@@ -159,7 +153,7 @@ interface ActivityComponent {
 ```
 ```kotlin
 @FragmentScope
-@Subcomponent(modules = [FragmentModule::class, FragmentPresenterModule::class])
+@Subcomponent(modules = [FragmentModule::class, FragmentMvpModule::class])
 interface FragmentComponent{
     // Sample usage
     fun inject(postFragment: postFragment) 
@@ -174,6 +168,7 @@ Create package **injection.module** and create files as below.
 @Module
 class ApiModule {
 
+    @Singleton
     @Provides
     fun providesApiHandler(
         @AppContext context: Context, api: Api, retrofit: Retrofit
@@ -181,11 +176,13 @@ class ApiModule {
         return ApiHandler(context, api, retrofit)
     }
 
+    @Singleton
     @Provides
     fun providesApi(retrofit: Retrofit): Api {
         return retrofit.create(Api::class.java)
     }
-
+    
+    @Singleton
     @Provides
     fun providesRetrofit(httpClient: OkHttpClient, factory: Converter.Factory): Retrofit {
         return Retrofit.Builder()
@@ -195,6 +192,7 @@ class ApiModule {
             .build()
     }
 
+    @Singleton
     @Provides
     fun providesOkHttpClient(loggingInterceptor: HttpLoggingInterceptor, cookieGenerator: CookieGenerator,trustManager: X509TrustManager?): OkHttpClient {
         return OkHttpClient.Builder()
@@ -214,33 +212,36 @@ class ApiModule {
         }
     }
     
+    @Singleton
     @Provides
-  internal fun providesTrustManager(): X509TrustManager? {
-    var trustManagerFactory: TrustManagerFactory? = null
-    try {
-      trustManagerFactory =
-        TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
-      trustManagerFactory!!.init(null as KeyStore?)
-      val trustManagers = trustManagerFactory.trustManagers
-      return if (trustManagers.size != 1 || trustManagers[0] !is X509TrustManager) {
-        // throw new IllegalStateException(
-        // &quot;Unexpected default trust managers:&quot; + Arrays.toString(trustManagers));
-        null
-      } else trustManagers[0] as X509TrustManager
-    } catch (e: NoSuchAlgorithmException) {
-      e.printStackTrace()
-      return null
-    } catch (e: KeyStoreException) {
-      e.printStackTrace()
-      return null
+    internal fun providesTrustManager(): X509TrustManager? {
+        var trustManagerFactory: TrustManagerFactory? = null
+        try {
+          trustManagerFactory =
+            TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
+          trustManagerFactory!!.init(null as KeyStore?)
+          val trustManagers = trustManagerFactory.trustManagers
+          return if (trustManagers.size != 1 || trustManagers[0] !is X509TrustManager) {
+            // throw new IllegalStateException(
+            // &quot;Unexpected default trust managers:&quot; + Arrays.toString(trustManagers));
+            null
+          } else trustManagers[0] as X509TrustManager
+        } catch (e: NoSuchAlgorithmException) {
+          e.printStackTrace()
+          return null
+        } catch (e: KeyStoreException) {
+          e.printStackTrace()
+          return null
+        }
     }
-  }
 
+    @Singleton
     @Provides
     fun providesGsonFactory(gson: Gson): Converter.Factory {
         return GsonConverterFactory.create(gson)
     }
 
+    @Singleton
     @Provides
     fun providesGson(): Gson {
         return GsonBuilder()
@@ -253,42 +254,34 @@ class ApiModule {
     private val postType: Type = toTypeToken<ApiResponse<Post>>()
 }
 ```
-**ActivityPresenterModule.kt**
+**ActivityMvpModule.kt**
 ```kotlin
 @Module
-class ActivityPresenterModule {
+abstract class ActivityMvpModule {
     //Sample usage
-    @Provides
+    @Binds
     @ActivityScope
-    fun providesPostPresenter(post: PostPresenter): PostContract.Presenter {
-        return post
-    }
+    abstract fun providesPostPresenter(post: PostPresenter): PostContract.Presenter
 
     //Sample usage
-    @Provides
+    @Binds
     @ActivityScope
-    fun providesPostApi(handler: ApiHandler): PostContract.Repository {
-        return PostRepository(handler)
-    }
+    abstract fun providesPostApi(postRepository: PostRepository): PostContract.Repository
 }
 ```
-**FragmentPresenterModule.kt**
+**FragmentMvpModule.kt**
 ```kotlin
 @Module
-class FragmentPresenterModule {
+class FragmentMvpModule {
     //Sample usage
-    @Provides
+    @Binds
     @FragmentScope
-    fun providesPostPresenter(post: PostPresenter): PostContract.Presenter {
-        return post
-    }
+    abstract fun providesPostPresenter(post: PostPresenter): PostContract.Presenter
 
     //Sample usage
-    @Provides
+    @Binds
     @FragmentScope
-    fun providesPostApi(handler: ApiHandler): PostContract.Repository {
-        return PostRepository(handler)
-    }
+    abstract fun providesPostApi(postRepository: PostRepository): PostContract.Repository
 }
 ```
 
@@ -327,7 +320,7 @@ class PostPresenter @Inject constructor(private val repository: PostContract.Rep
 ```
 **PostRepository.kt** (For all Network and Database operations)
 ```kotlin
-class PostRepository(private val apiHandler: ApiHandler) : RepositoryImpl<PostContract.Presenter>(),
+class PostRepository @Inject constructor(private val apiHandler: ApiHandler) : RepositoryImpl<PostContract.Presenter>(),
     PostContract.Repository {
     
     override fun cancel() {
@@ -351,7 +344,7 @@ class PostActivity : BaseActivity<PostContract.Presenter>(), PostContract.View {
     override fun inject() {
         (application  as? App)
             ?.component()
-            ?.activityComponent(ActivityModule(this), ActivityPresenterModule())
+            ?.activityComponent(ActivityModule(this))
             ?.inject(this)
     }
 }

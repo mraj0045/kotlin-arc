@@ -9,7 +9,6 @@ import com.arc.kotlin.inject.modules.ActivityModule
 import com.arc.kotlin.util.toast
 import com.architecture.App
 import com.architecture.R
-import com.architecture.injection.module.ActivityPresenterModule
 import com.architecture.model.Post
 import com.architecture.ui.post.mvp.PostContract
 import kotlinx.android.synthetic.main.activity_post.*
@@ -25,7 +24,7 @@ class PostActivity : BaseActivity<PostContract.Presenter>(), PostContract.View {
     override fun inject() {
         (application  as? App)
             ?.component()
-            ?.activityComponent(ActivityModule(this), ActivityPresenterModule())
+            ?.activityComponent(ActivityModule(this))
             ?.inject(this)
     }
 

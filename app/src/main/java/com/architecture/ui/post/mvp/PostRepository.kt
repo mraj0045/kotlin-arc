@@ -6,8 +6,9 @@ import com.arc.kotlin.base.RepositoryImpl
 import com.architecture.api.request.ApiHandler
 import com.architecture.model.Post
 import retrofit2.Call
+import javax.inject.Inject
 
-class PostRepository(private val apiHandler: ApiHandler) : RepositoryImpl<PostContract.Presenter>(),
+class PostRepository @Inject constructor(private val apiHandler: ApiHandler) : RepositoryImpl<PostContract.Presenter>(),
     PostContract.Repository {
 
     private var mCall: Call<ApiResponse<Post>>? = null

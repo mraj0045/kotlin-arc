@@ -23,10 +23,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.reflect.Type
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 
 @Module
 class ApiModule {
 
+    @Singleton
     @Provides
     fun providesApiHandler(
         @AppContext context: Context, api: Api, retrofit: Retrofit
@@ -34,11 +36,13 @@ class ApiModule {
         return ApiHandler(context, api, retrofit)
     }
 
+    @Singleton
     @Provides
     fun providesApi(retrofit: Retrofit): Api {
         return retrofit.create(Api::class.java)
     }
 
+    @Singleton
     @Provides
     fun providesRetrofit(httpClient: OkHttpClient, factory: Converter.Factory): Retrofit {
         return Retrofit.Builder()
@@ -48,6 +52,7 @@ class ApiModule {
             .build()
     }
 
+    @Singleton
     @Provides
     fun providesOkHttpClient(cookieGenerator: CookieGenerator): OkHttpClient {
         val interceptor = HttpLoggingInterceptor()
@@ -60,11 +65,13 @@ class ApiModule {
             .build()
     }
 
+    @Singleton
     @Provides
     fun providesGsonFactory(gson: Gson): Converter.Factory {
         return GsonConverterFactory.create(gson)
     }
 
+    @Singleton
     @Provides
     fun providesGson(): Gson {
         return GsonBuilder()
