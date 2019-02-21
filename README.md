@@ -40,7 +40,7 @@ ext {
 ```
 
 Add the following code in the app level gradle file (app/build.gragle)
-```g roovy
+```gradle
 apply plugin: 'kotlin-kapt'
 
 dependencies {
@@ -272,7 +272,7 @@ abstract class ActivityMvpModule {
 **FragmentMvpModule.kt**
 ```kotlin
 @Module
-class FragmentMvpModule {
+abstract class FragmentMvpModule {
     //Sample usage
     @Binds
     @FragmentScope
