@@ -9,6 +9,7 @@ The libraries used in this project are listed below.
 | ------ |
 | AppCompat |
 | RecyclerView |
+| ConstraintLayout |
 | Android KTX(core and fragment) |
 | Dagger 2(Dependency injection) |
 | Retrofit(Network) |
