@@ -43,6 +43,13 @@ Add the following code in the app level gradle file (app/build.gragle)
 ```gradle
 apply plugin: 'kotlin-kapt'
 
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
 dependencies {
     implementation 'com.arc.kotlin:arc-kotlin:x.x.x'
     //Include Dagger compiler for annotation processing
@@ -199,8 +206,11 @@ class ApiModule {
             .readTimeout(30, TimeUnit.SECONDS)
             .connectTimeout(30, TimeUnit.SECONDS)
             .cookieJar(JavaNetCookieJar(cookieGenerator.cookieHandler))
-            .addInterceptor(loggingInterceptor)
-            .sslSocketFactory(CustomSSLSocketFactory(), trustManager)
+            .addInterceptor(loggingInterceptor).apply {
+                if (trustManager != null) {
+                    sslSocketFactory(CustomSSLSocketFactory(), trustManager)
+                }
+            }
             .build()
     }
     
