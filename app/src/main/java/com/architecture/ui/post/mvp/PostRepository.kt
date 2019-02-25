@@ -17,8 +17,6 @@ class PostRepository @Inject constructor(private val apiHandler: ApiHandler) : R
         mCall = apiHandler.getPosts(
             success = { list ->
                 success(list)
-            }, authFailure = {
-
             }, error = { apiError ->
                 error(apiError)
             })

@@ -14,6 +14,7 @@ import androidx.annotation.StringRes
 import com.arc.kotlin.BuildConfig
 import com.arc.kotlin.util.formatter.DateFormatter
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import org.json.JSONArray
 import org.json.JSONObject
@@ -226,4 +227,9 @@ inline fun <reified T> toTypeToken(): Type {
  * @return true -> if null or empty, false -> if not empty */
 fun <T> List<T>?.isNullOrEmpty(): Boolean {
     return this == null || isEmpty()
+}
+
+/** Returns whether the Json Object is error response or not*/
+fun JsonObject.isError(): Boolean {
+    return (has("error") || has("errorcode")) && has("reason")
 }

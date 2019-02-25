@@ -87,47 +87,9 @@ class ApiHandler(private val context: Context, private val mApi: Api, private va
 
         val call = mApi.getPosts()
         call.enqueue(
-            object : Callback<ApiResponse<Post>> {
-                override fun onResponse(
-                    call: Call<ApiResponse<Post>>,
-                    response: Response<ApiResponse<Post>>
-                ) {
-                    if (response.isSuccessful) {
-                        val apiResponse = response.body()
-                        if (apiResponse != null) {
-                            if (!apiResponse.isError) {
-                                if (apiResponse.list.isEmpty())
-                                    error(ApiError.noData())
-                                else
-                                    success(apiResponse.list)
-                            } else {
-                                error(apiResponse.error!!)
-                            }
-                        } else {
-                            error(ApiError.noData())
-                        }
-                    } else {
-                        if (response.code() == StatusCode.AUTH_ERROR) {
-                            authFailure?.invoke()
-                        } else {
-                            var apiError: ApiError? = null
-                            if (response.errorBody() != null) apiError = retrofit.parseError(response)
-                            if (apiError == null)
-                                error(ApiError.noData())
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<ApiResponse<Post>>, t: Throwable) {
-                    when (t) {
-                        is SSLException, is SocketException, is SocketTimeoutException, is UnknownHostException ->
-                            error(ApiError.noInternet())
-                        else -> {
-                            error(ApiError.error())
-                        }
-                    }
-                }
-            })
+                    success = { success.invoke(it.list) },
+                    error = { error.invoke(this) },
+                    pError = { retrofit.parseError(it) })
         return call
     }
 }
@@ -138,7 +100,7 @@ Create package **injection.component** and create files as below.
 **AppComponent.kt**
 ```kotlin
 @Singleton
-@Component(modules = [AppModule::class, ApiModule::class]) //Can add more modules based on the requirement
+@Component(modules = [AppModule::class, RetrofitModule::class, ApiHandlerModule::class, ConfigModule::class, GsonModule::class]) //Can add more modules based on the requirement
 interface AppComponent {
 
     fun activityComponent(activityModule: ActivityModule): ActivityComponent
@@ -171,16 +133,14 @@ interface FragmentComponent{
 ```
 Create package **injection.module** and create files as below.
 
-**ApiModule.kt**
+**ApiHandlerModule.kt**
 ```kotlin
 @Module
-class ApiModule {
+class ApiHandlerModule {
 
     @Singleton
     @Provides
-    fun providesApiHandler(
-        @AppContext context: Context, api: Api, retrofit: Retrofit
-    ): ApiHandler {
+    fun providesApiHandler(@AppContext context: Context, api: Api, retrofit: Retrofit): ApiHandler {
         return ApiHandler(context, api, retrofit)
     }
 
@@ -189,63 +149,39 @@ class ApiModule {
     fun providesApi(retrofit: Retrofit): Api {
         return retrofit.create(Api::class.java)
     }
-    
-    @Singleton
+}
+```
+**ConfigModule.kt**
+```kotlin
+@Module
+class ConfigModule {
+
+    @BaseURL
     @Provides
-    fun providesRetrofit(httpClient: OkHttpClient, factory: Converter.Factory): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl("<BASE_URL>")
-            .client(httpClient)
-            .addConverterFactory(factory)
-            .build()
+    fun providesBaseUrl(): String {
+        return "https://jsonplaceholder.typicode.com"
     }
 
-    @Singleton
+    /** Enable or disables the Retrofit caching.
+     * Default value is false. */
+    @Cache
     @Provides
-    fun providesOkHttpClient(loggingInterceptor: Lazy<HttpLoggingInterceptor>, cookieGenerator: CookieGenerator,trustManager: X509TrustManager?): OkHttpClient {
-        return OkHttpClient.Builder()
-            .readTimeout(30, TimeUnit.SECONDS)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .cookieJar(JavaNetCookieJar(cookieGenerator.cookieHandler))
-            .apply {
-                if (BuildConfig.DEBUG) addInterceptor(loggingInterceptor.get())
-                if (trustManager != null) {
-                    sslSocketFactory(CustomSSLSocketFactory(), trustManager)
-                }
-            }
-            .build()
+    fun providesCacheEnabled(): Boolean {
+        return false
     }
-    
-    @Singleton
+
+    /** Enables or disables the Logging Interceptor. Default value depends on the [BuildConfig.DEBUG] value*/
+    @LogRequest
     @Provides
-    fun providesLoggingInterceptor(): HttpLoggingInterceptor {
-        return HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
+    fun logRequestEnabled(): Boolean {
+        return BuildConfig.DEBUG
     }
-    
-    @Singleton
-    @Provides
-    internal fun providesTrustManager(): X509TrustManager? {
-        var trustManagerFactory: TrustManagerFactory? = null
-        try {
-          trustManagerFactory =
-            TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
-          trustManagerFactory!!.init(null as KeyStore?)
-          val trustManagers = trustManagerFactory.trustManagers
-          return if (trustManagers.size != 1 || trustManagers[0] !is X509TrustManager) {
-            // throw new IllegalStateException(
-            // &quot;Unexpected default trust managers:&quot; + Arrays.toString(trustManagers));
-            null
-          } else trustManagers[0] as X509TrustManager
-        } catch (e: NoSuchAlgorithmException) {
-          e.printStackTrace()
-          return null
-        } catch (e: KeyStoreException) {
-          e.printStackTrace()
-          return null
-        }
-    }
+}
+```
+**GsonModule.kt**
+```kotlin
+@Module
+class GsonModule {
 
     @Singleton
     @Provides
@@ -258,12 +194,12 @@ class ApiModule {
     fun providesGson(): Gson {
         return GsonBuilder()
             .registerTypeAdapter(Date::class.java, DateDeserializer())
-            //For all the classes used for the response, register type adapter to make parsing works properly. Otherwise it will always goes to failure() method.
             .registerTypeAdapter(postType, CustomJsonDeserializer<Post>())
             .create()
     }
 
     private val postType: Type = toTypeToken<ApiResponse<Post>>()
+
 }
 ```
 **ActivityMvpModule.kt**
@@ -372,11 +308,13 @@ class App : ArcApplication<AppComponent>() {
     private var component: AppComponent? = null
     override fun component(): AppComponent? {
         if (component == null) {
-            component = DaggerAppComponent
-                .builder()
-                .appModule(AppModule(this))
-                .apiModule(ApiModule())
-                .build()
+            component = DaggerAppComponent.builder()
+               .appModule(AppModule(this))
+               .retrofitModule(RetrofitModule())
+               .apiHandlerModule(ApiHandlerModule())
+               .gsonModule(GsonModule())
+               .configModule(ConfigModule())
+               .build()
         }
         return component
     }
@@ -395,7 +333,11 @@ Finally add the **App.kt** to the manifest file
 ```
 
 ## Latest version
-* **0.0.4**
+* **0.0.5**
+    * Included custom callback for Retrofit Call, call.enqueue{} and call.execute{}. 
+    * Modified Dagger-retrofit implementation. 
+    * Added options to enable or disable Logging interceptor and Cache.
+* 0.0.4
     * Added constraint layout library
     
 * 0.0.3

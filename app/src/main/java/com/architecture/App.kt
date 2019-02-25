@@ -2,9 +2,12 @@ package com.architecture
 
 import com.arc.kotlin.ArcApplication
 import com.arc.kotlin.inject.modules.AppModule
+import com.arc.kotlin.inject.modules.RetrofitModule
 import com.architecture.injection.component.AppComponent
 import com.architecture.injection.component.DaggerAppComponent
-import com.architecture.injection.module.ApiModule
+import com.architecture.injection.module.ApiHandlerModule
+import com.architecture.injection.module.ConfigModule
+import com.architecture.injection.module.GsonModule
 
 class App : ArcApplication<AppComponent>() {
 
@@ -12,10 +15,12 @@ class App : ArcApplication<AppComponent>() {
 
     override fun component(): AppComponent? {
         if (component == null) {
-            component = DaggerAppComponent
-                .builder()
+            component = DaggerAppComponent.builder()
                 .appModule(AppModule(this))
-                .apiModule(ApiModule())
+                .retrofitModule(RetrofitModule())
+                .apiHandlerModule(ApiHandlerModule())
+                .gsonModule(GsonModule())
+                .configModule(ConfigModule())
                 .build()
         }
         return component
