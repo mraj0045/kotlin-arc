@@ -202,12 +202,13 @@ class ApiModule {
 
     @Singleton
     @Provides
-    fun providesOkHttpClient(loggingInterceptor: HttpLoggingInterceptor, cookieGenerator: CookieGenerator,trustManager: X509TrustManager?): OkHttpClient {
+    fun providesOkHttpClient(loggingInterceptor: Lazy<HttpLoggingInterceptor>, cookieGenerator: CookieGenerator,trustManager: X509TrustManager?): OkHttpClient {
         return OkHttpClient.Builder()
             .readTimeout(30, TimeUnit.SECONDS)
             .connectTimeout(30, TimeUnit.SECONDS)
             .cookieJar(JavaNetCookieJar(cookieGenerator.cookieHandler))
-            .addInterceptor(loggingInterceptor).apply {
+            .apply {
+                if (BuildConfig.DEBUG) addInterceptor(loggingInterceptor.get())
                 if (trustManager != null) {
                     sslSocketFactory(CustomSSLSocketFactory(), trustManager)
                 }

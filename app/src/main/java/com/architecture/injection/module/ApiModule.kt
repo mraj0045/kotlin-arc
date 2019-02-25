@@ -8,11 +8,13 @@ import com.arc.kotlin.api.response.DateDeserializer
 import com.arc.kotlin.api.security.CustomSSLSocketFactory
 import com.arc.kotlin.inject.scope.AppContext
 import com.arc.kotlin.util.toTypeToken
+import com.architecture.BuildConfig
 import com.architecture.api.request.Api
 import com.architecture.api.request.ApiHandler
 import com.architecture.model.Post
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import okhttp3.JavaNetCookieJar
@@ -61,7 +63,7 @@ class ApiModule {
     @Singleton
     @Provides
     fun providesOkHttpClient(
-        loggingInterceptor: HttpLoggingInterceptor,
+        loggingInterceptor: Lazy<HttpLoggingInterceptor>,
         cookieGenerator: CookieGenerator,
         trustManager: X509TrustManager?
     ): OkHttpClient {
@@ -69,7 +71,8 @@ class ApiModule {
             .readTimeout(30, TimeUnit.SECONDS)
             .connectTimeout(30, TimeUnit.SECONDS)
             .cookieJar(JavaNetCookieJar(cookieGenerator.cookieHandler))
-            .addInterceptor(loggingInterceptor).apply {
+            .apply {
+                if (BuildConfig.DEBUG) addInterceptor(loggingInterceptor.get())
                 if (trustManager != null) {
                     sslSocketFactory(CustomSSLSocketFactory(), trustManager)
                 }
