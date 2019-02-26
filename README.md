@@ -161,21 +161,6 @@ class ConfigModule {
     fun providesBaseUrl(): String {
         return "https://jsonplaceholder.typicode.com"
     }
-
-    /** Enable or disables the Retrofit caching.
-     * Default value is false. */
-    @Cache
-    @Provides
-    fun providesCacheEnabled(): Boolean {
-        return false
-    }
-
-    /** Enables or disables the Logging Interceptor. Default value depends on the [BuildConfig.DEBUG] value*/
-    @LogRequest
-    @Provides
-    fun logRequestEnabled(): Boolean {
-        return BuildConfig.DEBUG
-    }
 }
 ```
 **GsonModule.kt**
@@ -318,6 +303,11 @@ class App : ArcApplication<AppComponent>() {
         }
         return component
     }
+    
+    override fun onCreate() {
+        super.onCreate()
+        ArcSdk.setApiConfig(ApiConfig.create().setApiLoggingEnable(BuildConfig.DEBUG))
+    }
 }
 ```
 Finally add the **App.kt** to the manifest file
@@ -333,13 +323,14 @@ Finally add the **App.kt** to the manifest file
 ```
 
 ## Latest version
-* **0.0.5**
+* **0.0.6**
+    * ArcSdk class included to initialize config.
+* 0.0.5
     * Included custom callback for Retrofit Call, call.enqueue{} and call.execute{}. 
     * Modified Dagger-retrofit implementation. 
     * Added options to enable or disable Logging interceptor and Cache.
 * 0.0.4
     * Added constraint layout library
-    
 * 0.0.3
     * Added option to change the version no of Kotlin core-ktx and Fragment-ktx
 * 0.0.2

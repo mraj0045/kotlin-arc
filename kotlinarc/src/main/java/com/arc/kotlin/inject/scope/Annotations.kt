@@ -6,13 +6,3 @@ import javax.inject.Qualifier
 @Retention(value = AnnotationRetention.RUNTIME)
 @Qualifier
 annotation class BaseURL
-
-@MustBeDocumented
-@Retention(value = AnnotationRetention.RUNTIME)
-@Qualifier
-annotation class Cache
-
-@MustBeDocumented
-@Retention(value = AnnotationRetention.RUNTIME)
-@Qualifier
-annotation class LogRequest

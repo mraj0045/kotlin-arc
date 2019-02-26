@@ -3,10 +3,9 @@ package com.arc.kotlin.inject.modules
 import android.content.Context
 import com.arc.kotlin.api.cookie.CookieGenerator
 import com.arc.kotlin.api.security.CustomSSLSocketFactory
+import com.arc.kotlin.config.ArcSdk
 import com.arc.kotlin.inject.scope.AppContext
 import com.arc.kotlin.inject.scope.BaseURL
-import com.arc.kotlin.inject.scope.Cache
-import com.arc.kotlin.inject.scope.LogRequest
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
@@ -43,8 +42,6 @@ class RetrofitModule {
     @Provides
     fun providesOkHttpClient(
         @AppContext context: Lazy<Context>,
-        @Cache enableCache: Boolean,
-        @LogRequest logRequest: Boolean,
         loggingInterceptor: Lazy<HttpLoggingInterceptor>,
         cookieGenerator: CookieGenerator,
         trustManager: X509TrustManager?
@@ -54,8 +51,13 @@ class RetrofitModule {
             .connectTimeout(30, TimeUnit.SECONDS)
             .cookieJar(JavaNetCookieJar(cookieGenerator.cookieHandler))
             .apply {
-                if (enableCache) cache(okhttp3.Cache(context.get().cacheDir, 10 * 1024 * 1024))
-                if (logRequest) addInterceptor(loggingInterceptor.get())
+                if (ArcSdk.getApiConfig().isCacheEnabled()) cache(
+                    okhttp3.Cache(
+                        context.get().cacheDir,
+                        10 * 1024 * 1024
+                    )
+                )
+                if (ArcSdk.getApiConfig().isApiLoggingEnabled()) addInterceptor(loggingInterceptor.get())
                 if (trustManager != null) {
                     sslSocketFactory(CustomSSLSocketFactory(), trustManager)
                 }
@@ -74,9 +76,8 @@ class RetrofitModule {
     @Singleton
     @Provides
     internal fun providesTrustManager(): X509TrustManager? {
-        var trustManagerFactory: TrustManagerFactory? = null
         try {
-            trustManagerFactory =
+            val trustManagerFactory: TrustManagerFactory? =
                 TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
             trustManagerFactory!!.init(null as KeyStore?)
             val trustManagers = trustManagerFactory.trustManagers

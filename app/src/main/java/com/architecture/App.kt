@@ -1,6 +1,8 @@
 package com.architecture
 
 import com.arc.kotlin.ArcApplication
+import com.arc.kotlin.config.ApiConfig
+import com.arc.kotlin.config.ArcSdk
 import com.arc.kotlin.inject.modules.AppModule
 import com.arc.kotlin.inject.modules.RetrofitModule
 import com.architecture.injection.component.AppComponent
@@ -24,5 +26,10 @@ class App : ArcApplication<AppComponent>() {
                 .build()
         }
         return component
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        ArcSdk.setApiConfig(ApiConfig.create().setApiLoggingEnable(BuildConfig.DEBUG))
     }
 }
