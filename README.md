@@ -325,6 +325,7 @@ Finally add the **App.kt** to the manifest file
 ## Latest version
 * **0.0.6**
     * ArcSdk class included to initialize config.
+    * BasePreference manager class added.
 * 0.0.5
     * Included custom callback for Retrofit Call, call.enqueue{} and call.execute{}. 
     * Modified Dagger-retrofit implementation. 

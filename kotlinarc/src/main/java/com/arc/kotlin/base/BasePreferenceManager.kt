@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 
-abstract class BasePreferenceManager(private val context: Context, private val preferenceName: String) {
+abstract class BasePreferenceManager(val context: Context, private val preferenceName: String) {
 
     /**
      * Creates Shared Preference object from the Context name
