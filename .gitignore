@@ -13,3 +13,5 @@
 .externalNativeBuild
 /.idea/google-java-format.xml
 /.idea/markdown-navigator.xml
+.idea/markdown-navigator/
+kotlinarc/libs/
