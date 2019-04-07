@@ -14,6 +14,11 @@ import java.security.NoSuchAlgorithmException;
 @SuppressLint("GetInstance")
 final class Security {
 
+    private Security() {
+    }
+
+    private static final String TAG = Security.class.getSimpleName();
+
     public static String encrypt(String secretKey, String input) {
         byte[] crypted = null;
         try {
@@ -22,7 +27,7 @@ final class Security {
             cipher.init(Cipher.ENCRYPT_MODE, skey);
             crypted = cipher.doFinal(input.getBytes());
         } catch (Exception e) {
-            System.out.println(e.toString());
+            Logger.tag(TAG).e(e.toString());
         }
 
         return urlEncode(Base64.encodeToString(crypted, Base64.DEFAULT));
@@ -39,7 +44,7 @@ final class Security {
             output = cipher.doFinal(Base64.decode(input, Base64.DEFAULT));
             result = new String(output);
         } catch (Exception e) {
-            System.out.println(e.toString());
+            Logger.tag(TAG).e(e.toString());
         }
         return result;
     }
@@ -60,7 +65,7 @@ final class Security {
             md.update(text.getBytes(StandardCharsets.ISO_8859_1), 0, text.length());
 
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            Logger.tag(TAG).e(e.toString());
         }
 
         byte[] sha1hash = md != null ? md.digest() : new byte[0];
@@ -71,14 +76,14 @@ final class Security {
         StringBuilder buf = new StringBuilder();
         for (byte b : data) {
             int halfbyte = (b >>> 4) & 0x0F;
-            int two_halfs = 0;
+            int twoHalfs = 0;
             do {
                 buf.append(
                         (0 <= halfbyte) && (halfbyte <= 9)
                                 ? (char) ('0' + halfbyte)
                                 : (char) ('a' + (halfbyte - 10)));
                 halfbyte = b & 0x0F;
-            } while (two_halfs++ < 1);
+            } while (twoHalfs++ < 1);
         }
         return buf.toString();
     }

@@ -21,6 +21,7 @@ class DateDeserializer : JsonDeserializer<Date> {
             try {
                 return SimpleDateFormat(format, Locale.US).parse(jsonElement.asString)
             } catch (ignored: ParseException) {
+                //Parse exception
             }
         }
         return null

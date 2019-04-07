@@ -63,15 +63,13 @@ abstract class PagedRecyclerViewAdapter<T>(
                     val firstVisibleItem = mRecyclerViewHelper.findFirstVisibleItemPosition()
                     if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE
                         && visibleItemCount + firstVisibleItem >= totalItemCount!!
-                        && firstVisibleItem >= 0
+                        && firstVisibleItem >= 0 && totalItemCount % pageLimit == 0 && !isLastPage
                     ) {
-                        if (totalItemCount % pageLimit == 0 && !isLastPage) {
-                            val page = itemCount / pageLimit + 1
-                            if (!isLoading) {
-                                isLoading = java.lang.Boolean.TRUE
-                                addLoadingItem()
-                                loadMore(page)
-                            }
+                        val page = itemCount / pageLimit + 1
+                        if (!isLoading) {
+                            isLoading = java.lang.Boolean.TRUE
+                            addLoadingItem()
+                            loadMore(page)
                         }
                     }
                 }

@@ -87,6 +87,7 @@ class Logger private constructor(private val tag: String) {
          *
          * @param tag Tag to be displayed
          */
+        @JvmStatic
         fun tag(tag: String): Logger {
             return Logger(tag)
         }
