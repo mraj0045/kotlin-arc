@@ -37,6 +37,7 @@ class PostActivity : BaseActivity<PostContract.Presenter>(), PostContract.View {
 
     override fun updateView(list: List<Post>) {
         recyclerView.adapter = PostAdapter(list)
+        recyclerView.scheduleLayoutAnimation()
     }
 
     override fun error(apiError: ApiError) {

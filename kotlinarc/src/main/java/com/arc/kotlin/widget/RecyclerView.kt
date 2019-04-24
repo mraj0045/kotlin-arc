@@ -76,8 +76,8 @@ class RecyclerView @JvmOverloads constructor(
         }
     }
 
-    private val observer: androidx.recyclerview.widget.RecyclerView.AdapterDataObserver =
-        object : androidx.recyclerview.widget.RecyclerView.AdapterDataObserver() {
+    private val observer: AdapterDataObserver =
+        object : AdapterDataObserver() {
             override fun onChanged() {
                 super.onChanged()
                 toggleEmptyViewVisibility()
