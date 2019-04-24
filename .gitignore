@@ -15,3 +15,5 @@
 /.idea/markdown-navigator.xml
 .idea/markdown-navigator/
 kotlinarc/libs/
+.idea/encodings.xml
+.idea/sonarlint/
