@@ -307,6 +307,9 @@ class App : ArcApplication<AppComponent>() {
     override fun onCreate() {
         super.onCreate()
         ArcSdk.setApiConfig(ApiConfig.create().setApiLoggingEnable(BuildConfig.DEBUG))
+            .errorCondition {
+                (it.has("error") || it.has("errorcode")) && it.has("reason")
+            }
     }
 }
 ```
@@ -323,7 +326,10 @@ Finally add the **App.kt** to the manifest file
 ```
 
 ## Latest version
-* **0.0.6**
+* **0.0.7**
+    * Option to add error condition in api added to the ArcSdk class.
+    * Utils files updated.
+* 0.0.6
     * ArcSdk class included to initialize config.
     * BasePreference manager class added.
 * 0.0.5
