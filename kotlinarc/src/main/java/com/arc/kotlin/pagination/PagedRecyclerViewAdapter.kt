@@ -14,9 +14,6 @@ abstract class PagedRecyclerViewAdapter<T>(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
-
-        private val TAG = PagedRecyclerViewAdapter::class.java.simpleName
-
         private const val PAGE_LIMIT = 15
         private const val NORMAL_ITEM = 1
         private const val LOAD_ITEM = 2
@@ -25,14 +22,14 @@ abstract class PagedRecyclerViewAdapter<T>(
     /**
      * Returns the Loading layout to be used when loading
      */
-    private var isLoading = java.lang.Boolean.FALSE
+    private var isLoading = false
     /**
      * Returns whether the page is Last page or not
      *
      * @return true -> if last page, false -> if not last page
      */
-    private var isLastPage = java.lang.Boolean.FALSE
-    private var recyclerView: androidx.recyclerview.widget.RecyclerView? = null
+    private var isLastPage = false
+    private var recyclerView: RecyclerView? = null
 
     /** Creates view holder based on the view type*/
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -48,12 +45,12 @@ abstract class PagedRecyclerViewAdapter<T>(
     /**
      * Initialize the pagination
      */
-    fun setUpLoadMore(recyclerView: androidx.recyclerview.widget.RecyclerView) {
+    fun setUpLoadMore(recyclerView: RecyclerView) {
         this.recyclerView = recyclerView
         this.recyclerView?.addOnScrollListener(
-            object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+            object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(
-                    recyclerView: androidx.recyclerview.widget.RecyclerView,
+                    recyclerView: RecyclerView,
                     newState: Int
                 ) {
                     super.onScrollStateChanged(recyclerView, newState)
@@ -77,8 +74,9 @@ abstract class PagedRecyclerViewAdapter<T>(
     }
 
 
+    /** returns total item count.*/
     override fun getItemCount(): Int {
-        return list?.size!!
+        return list?.size ?: 0
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -105,10 +103,17 @@ abstract class PagedRecyclerViewAdapter<T>(
      */
     protected abstract fun loadMore(page: Int)
 
-    /**
-     * Cancel in-flight Api calls
-     */
-    abstract fun cancelApi()
+    /** Assigns new list of items to the adapter
+     * @param list List of [T] instance */
+    fun setItems(list: List<T>) {
+        if (isLoading) removeLoadingItem()
+        isLoading = false
+        this.list?.apply {
+            clear()
+            addAll(list)
+        }
+        notifyDataSetChanged()
+    }
 
     /**
      * Adds list of items
@@ -145,7 +150,8 @@ abstract class PagedRecyclerViewAdapter<T>(
 
     /**
      * Call this function to mark the list has reached the end and further API calls should be
-     * restricted.<br></br>
+     * restricted.
+     *
      * Don't call this for all the error cases. Call Only for the EOD.
      */
     fun setLastPage() {
@@ -157,5 +163,5 @@ abstract class PagedRecyclerViewAdapter<T>(
     /**
      * Loading View Holder
      */
-    class LoadHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView)
+    class LoadHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }

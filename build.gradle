@@ -28,7 +28,7 @@ ext {
     recyclerViewVersion = '1.0.0'
     retrofitVersion = '2.5.0'
     okHttpVersion = '3.13.1'
-    coreKtxVersion = '1.1.0-alpha04'
+    coreKtxVersion = '1.1.0-alpha05'
     fragmentKtxVerion = '1.0.0'
     constraintLayoutVersion = '1.1.3'
 }

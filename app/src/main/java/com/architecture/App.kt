@@ -31,5 +31,8 @@ class App : ArcApplication<AppComponent>() {
     override fun onCreate() {
         super.onCreate()
         ArcSdk.setApiConfig(ApiConfig.create().setApiLoggingEnable(BuildConfig.DEBUG))
+            .errorCondition {
+                (it.has("error") || it.has("errorcode")) && it.has("reason")
+            }
     }
 }

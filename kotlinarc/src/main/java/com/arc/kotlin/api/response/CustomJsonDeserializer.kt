@@ -1,6 +1,6 @@
 package com.arc.kotlin.api.response
 
-import com.arc.kotlin.util.isError
+import com.arc.kotlin.config.ArcSdk
 import com.google.gson.*
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
@@ -29,7 +29,7 @@ class CustomJsonDeserializer<T : Any> : JsonDeserializer<ApiResponse<T>> {
             }
             element.isJsonObject -> {
                 val json = element.asJsonObject
-                return if (json.isError()) {
+                return if (ArcSdk.errorCondition.invoke(json)) {
                     val error = gson.fromJson(element, ApiError::class.java)
                     ApiResponse(error)
                 } else {

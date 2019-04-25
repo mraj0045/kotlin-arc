@@ -2,6 +2,7 @@ package com.arc.kotlin.util
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
@@ -11,14 +12,19 @@ import android.util.Patterns
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.StringRes
+import androidx.annotation.StyleRes
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.arc.kotlin.BuildConfig
 import com.arc.kotlin.util.formatter.DateFormatter
 import com.google.gson.Gson
-import com.google.gson.JsonObject
+import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
 import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.reflect.Type
+import java.text.DecimalFormat
 import java.util.*
 
 inline fun debug(code: () -> Unit) {
@@ -76,12 +82,41 @@ fun Context?.showKeyboard(view: View) {
 }
 
 /** Returns whether the current device is Tablet or not*/
-fun Context.isTablet() =
-    (resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE
+fun Context?.isTablet(): Boolean {
+    if (this == null) return false
+    return (resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE
+}
 
-/** Returns whether the current device is Tablet or not*/
-fun Context.isMobile() =
-    (resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK) <= Configuration.SCREENLAYOUT_SIZE_NORMAL
+/** Returns whether the current device is Mobile or not*/
+fun Context?.isMobile(): Boolean {
+    if (this == null) return false
+    return (resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK) <= Configuration.SCREENLAYOUT_SIZE_NORMAL
+}
+
+/** Starts the specified activity
+ * @param flag apply single or multiple flags */
+inline fun <reified T> Context?.startActivity(flag: Int = -1) {
+    this?.startActivity(Intent(this, T::class.java).apply {
+        if (flag != -1) flags = flag
+    })
+}
+
+/** Starts the specified activity
+ * @param flag apply single or multiple flags */
+inline fun <reified T> AppCompatActivity?.startActivity(flag: Int = -1) {
+    this?.startActivity(Intent(this, T::class.java).apply {
+        if (flag != -1) flags = flag
+    })
+}
+
+/** Starts the specified activity
+ * @param flag apply single or multiple flags */
+inline fun <reified T> Fragment?.startActivity(flag: Int = -1) {
+    this?.startActivity(Intent(context, T::class.java).apply {
+        if (flag != -1) flags = flag
+    })
+}
+
 
 /**Formats the date with the given pattern and returns string
  * @param pattern Pattern to format(e.g, yyyy-MM-dd)
@@ -174,7 +209,6 @@ fun String?.isLegalPassword(): Boolean = this != null
  */
 fun String.sha1(): String = Security.SHA1(this)
 
-
 /** Initializes a [JSONArray] block*/
 fun jsonArray(init: JSONArray.() -> Unit): JSONArray {
     val jsonArray = JSONArray()
@@ -218,6 +252,12 @@ inline fun <reified T> Gson.fromJson(value: String): T {
     return fromJson(value, toTypeToken<T>())
 }
 
+/** Parses Json to POJO class as given in the generic type
+ * @param value Data to be parsed */
+inline fun <reified T> Gson.fromJson(value: JsonElement): T {
+    return fromJson(value, toTypeToken<T>())
+}
+
 /** Returns the type of the class*/
 inline fun <reified T> toTypeToken(): Type {
     return object : TypeToken<T>() {}.type
@@ -229,7 +269,29 @@ fun <T> List<T>?.isNullOrEmpty(): Boolean {
     return this == null || isEmpty()
 }
 
-/** Returns whether the Json Object is error response or not*/
-fun JsonObject.isError(): Boolean {
-    return (has("error") || has("errorcode")) && has("reason")
+/** Returns the string representation of the value using [DecimalFormat]
+ * @param pattern conversion pattern for [DecimalFormat]*/
+fun Double.toCurrency(pattern: String = "0.##"): String {
+    return DecimalFormat(pattern).format(this)
+}
+
+/** Returns the string representation of the value using [DecimalFormat]
+ * @param pattern conversion pattern for [DecimalFormat]*/
+fun Float.toCurrency(pattern: String = "0.##"): String {
+    return DecimalFormat(pattern).format(this)
+}
+
+/** Creates Alert dialog.
+ * @param context App context
+ * @param themeResId Theme style resource id. Default is 0
+ * @param show true-> will displays the dialog & returns dialog object. false-> returns dialog object
+ * @param init Initializes dialog builder block*/
+fun alertDialog(
+    context: Context, @StyleRes themeResId: Int = 0,
+    show: Boolean = false,
+    init: AlertDialog.Builder.() -> Unit
+): AlertDialog {
+    val builder = AlertDialog.Builder(context, themeResId)
+    builder.init()
+    return if (show) builder.show() else builder.create()
 }
