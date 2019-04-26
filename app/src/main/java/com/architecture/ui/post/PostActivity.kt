@@ -29,6 +29,7 @@ class PostActivity : BaseActivity<PostContract.Presenter>(), PostContract.View {
     }
 
     override fun init() {
+        setSupportActionBar(toolbar)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@PostActivity)
             addItemDecoration(DividerItemDecoration(this@PostActivity, DividerItemDecoration.VERTICAL))
