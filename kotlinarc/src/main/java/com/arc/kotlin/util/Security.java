@@ -12,12 +12,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 @SuppressLint("GetInstance")
-final class Security {
+public final class Security {
+
+    private static final String TAG = Security.class.getSimpleName();
 
     private Security() {
     }
-
-    private static final String TAG = Security.class.getSimpleName();
 
     public static String encrypt(String secretKey, String input) {
         byte[] crypted = null;

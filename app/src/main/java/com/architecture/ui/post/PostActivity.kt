@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.arc.kotlin.api.response.ApiError
 import com.arc.kotlin.base.BaseActivity
 import com.arc.kotlin.inject.modules.ActivityModule
-import com.arc.kotlin.util.toast
+import com.arc.kotlin.util.extensions.toast
 import com.architecture.App
 import com.architecture.R
 import com.architecture.model.Post

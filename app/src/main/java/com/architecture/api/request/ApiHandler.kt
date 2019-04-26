@@ -6,7 +6,7 @@ import com.arc.kotlin.api.response.ApiError
 import com.arc.kotlin.api.response.ApiResponse
 import com.arc.kotlin.api.response.enqueue
 import com.arc.kotlin.api.response.parseError
-import com.arc.kotlin.util.isOnline
+import com.arc.kotlin.util.extensions.isOnline
 import com.architecture.model.Post
 import retrofit2.Call
 import retrofit2.Retrofit
