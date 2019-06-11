@@ -3,8 +3,14 @@ package com.arc.kotlin.api.response
 import com.arc.kotlin.api.response.StatusCode.DEFAULT
 import com.arc.kotlin.api.response.StatusCode.NO_DATA
 import com.arc.kotlin.api.response.StatusCode.NO_INTERNET
+import com.google.gson.annotations.SerializedName
 
-class ApiError(val error: Int, val reason: String) {
+class ApiError(
+    @SerializedName(value = "errorcode") val code: Int, @SerializedName(
+        value = "reason",
+        alternate = ["error"]
+    ) val reason: String
+) {
 
     companion object {
         fun noInternet(): ApiError {
