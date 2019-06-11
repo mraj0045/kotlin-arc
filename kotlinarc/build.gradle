@@ -5,7 +5,7 @@ buildscript {
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.0'
+        classpath 'com.android.tools.build:gradle:3.4.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.novoda:bintray-release:0.9'
         // NOTE: Do not place your application dependencies here; they belong
@@ -22,7 +22,7 @@ publish {
     userOrg = 'mraj0045' //bintray username
     groupId = 'com.arc.kotlin'
     artifactId = 'arc-kotlin'
-    publishVersion = '0.0.7'
+    publishVersion = '0.0.8'
     desc = 'Base Architecture and Utility files to be used in the projects.'
     website = 'https://github.com/mraj0045/kotlin-arc'
 }
