@@ -1,5 +1,6 @@
 package com.arc.kotlin.util.extensions
 
+import java.math.RoundingMode
 import java.text.DecimalFormat
 
 /** Safe converts to int*/
@@ -40,14 +41,14 @@ fun String?.long(): Long = try {
 
 /** Returns the string representation of the value using [DecimalFormat]
  * @param pattern conversion pattern for [DecimalFormat]*/
-fun Double?.toCurrency(pattern: String = "0.##"): String {
+fun Double?.format(pattern: String = "0.##", roundingMode: RoundingMode? = null): String {
     if (this == null) return "0"
-    return DecimalFormat(pattern).format(this)
+    return DecimalFormat(pattern).apply { if (roundingMode != null) this.roundingMode = roundingMode }.format(this)
 }
 
 /** Returns the string representation of the value using [DecimalFormat]
  * @param pattern conversion pattern for [DecimalFormat]*/
-fun Float?.toCurrency(pattern: String = "0.##"): String {
+fun Float?.format(pattern: String = "0.##", roundingMode: RoundingMode? = null): String {
     if (this == null) return "0"
-    return DecimalFormat(pattern).format(this)
+    return DecimalFormat(pattern).apply { if (roundingMode != null) this.roundingMode = roundingMode }.format(this)
 }
