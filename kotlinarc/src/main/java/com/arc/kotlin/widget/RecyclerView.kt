@@ -62,10 +62,13 @@ class RecyclerView @JvmOverloads constructor(
 
     /**
      * Sets the view to show if the adapter is empty
+     * @param emptyView View object
+     * @param toggleImmediate if true shows the empty view immediately when adapter is assigned with empty list items.
      */
-    fun setEmptyView(emptyView: View) {
+    fun setEmptyView(emptyView: View, toggleImmediate: Boolean = true) {
         this.emptyView = emptyView
-        toggleEmptyViewVisibility()
+        if (toggleImmediate)
+            toggleEmptyViewVisibility()
     }
 
     private fun toggleEmptyViewVisibility() {
