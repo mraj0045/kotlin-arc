@@ -9,4 +9,7 @@ interface Api {
 
     @GET("/posts")
     fun getPosts(): Call<ApiResponse<Post>>
+
+    @GET("/mraj0045/ApiResponse/errorResponse/")
+    fun getErrorResponse(): Call<ApiResponse<Post>>
 }

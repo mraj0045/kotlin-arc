@@ -19,6 +19,12 @@ The libraries used in this project are listed below.
 Follow the steps given below to implement the code.
 
 ### Step 1 - Updating Gradle files
+Add the following lines of code in the gradle.properties file
+```properties
+# Api Error keys
+ERROR_KEY="errorcode"
+ERROR_MSG="reason"
+```
 Add the below lines in the project level build.gradle file
 ```groovy
 buildscript {
@@ -45,6 +51,7 @@ Add the following code in the app level gradle file (app/build.gragle)
 apply plugin: 'kotlin-kapt'
 
 android {
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -326,7 +333,9 @@ Finally add the **App.kt** to the manifest file
 ```
 
 ## Latest version
-* **0.0.9**
+* **0.1.0**
+    * Option to change the [ApiError](kotlinarc/src/main/java/com/arc/kotlin/api/response/ApiError.kt) response keys.
+* 0.0.9
     * Latest version.
 * 0.0.8
     * ApiError class Serialized name added.

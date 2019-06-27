@@ -11,5 +11,6 @@ class ConfigModule {
     @Provides
     fun providesBaseUrl(): String {
         return "https://jsonplaceholder.typicode.com"
+//        return "https://my-json-server.typicode.com"
     }
 }
