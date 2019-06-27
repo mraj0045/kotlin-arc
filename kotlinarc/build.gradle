@@ -22,7 +22,7 @@ publish {
     userOrg = 'mraj0045' //bintray username
     groupId = 'com.arc.kotlin'
     artifactId = 'arc-kotlin'
-    publishVersion = '0.0.8'
+    publishVersion = '0.0.9'
     desc = 'Base Architecture and Utility files to be used in the projects.'
     website = 'https://github.com/mraj0045/kotlin-arc'
 }

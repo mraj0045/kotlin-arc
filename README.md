@@ -326,7 +326,9 @@ Finally add the **App.kt** to the manifest file
 ```
 
 ## Latest version
-* **0.0.8**
+* **0.0.9**
+    * Latest version.
+* 0.0.8
     * ApiError class Serialized name added.
 * 0.0.7
     * Option to add error condition in api added to the ArcSdk class.
