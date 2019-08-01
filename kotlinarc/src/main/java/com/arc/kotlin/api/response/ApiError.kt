@@ -9,7 +9,12 @@ import com.google.gson.annotations.SerializedName
 /** Class used for parsing error response from the API
  * @param code Error code, Serialized name [BuildConfig.ERROR_KEY]
  * @param reason Error message*/
-class ApiError(@SerializedName(BuildConfig.ERROR_KEY) val code: Int, @SerializedName(BuildConfig.ERROR_MSG) val reason: String) {
+class ApiError(
+    @SerializedName(value = "errorcode") val code: Int, @SerializedName(
+        value = "reason",
+        alternate = ["error"]
+    ) val reason: String
+) {
 
     companion object {
         /** Create no internet error */
