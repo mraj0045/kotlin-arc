@@ -4,6 +4,7 @@ class ApiConfig private constructor() {
 
     private var cacheEnabled: Boolean = false
     private var apiLoggingEnabled: Boolean = false
+     var timeOut: Long = 30L
 
     companion object {
 
@@ -28,6 +29,11 @@ class ApiConfig private constructor() {
      * @param apiLoggingEnabled true or false  */
     fun setApiLoggingEnable(apiLoggingEnabled: Boolean): ApiConfig {
         this.apiLoggingEnabled = apiLoggingEnabled
+        return this
+    }
+
+    fun setTimeOut(timeOut: Long): ApiConfig {
+        this.timeOut = timeOut
         return this
     }
 

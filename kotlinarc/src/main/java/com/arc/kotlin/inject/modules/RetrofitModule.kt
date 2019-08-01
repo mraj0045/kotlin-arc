@@ -47,8 +47,8 @@ class RetrofitModule {
         trustManager: X509TrustManager?
     ): OkHttpClient {
         return OkHttpClient.Builder()
-            .readTimeout(30, TimeUnit.SECONDS)
-            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(ArcSdk.getApiConfig().timeOut, TimeUnit.SECONDS)
+            .connectTimeout(ArcSdk.getApiConfig().timeOut, TimeUnit.SECONDS)
             .cookieJar(JavaNetCookieJar(cookieGenerator.cookieHandler))
             .apply {
                 if (ArcSdk.getApiConfig().isCacheEnabled()) cache(
